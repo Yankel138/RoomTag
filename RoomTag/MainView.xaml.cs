@@ -19,7 +19,7 @@ namespace RoomTag
     /// <summary>
     /// Логика взаимодействия для MainView.xaml
     /// </summary>
-    public partial class MainView : UserControl
+    public partial class MainView : Window
     {
         public MainView(ExternalCommandData commandData)
         {

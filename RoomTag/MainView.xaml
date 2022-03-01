@@ -5,15 +5,10 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:RoomTag"
              mc:Ignorable="d" 
-              Height="200" Width="300"
+              Height="150" Width="200"
              Title="Нумерация помещений">
     <StackPanel>
-        <Label Content="Выберите уровень"
-               Margin="5"/>
-        <ComboBox ItemsSource="{Binding Levels}"
-                  SelectedValue="{Binding SelectedLevel}"
-                  DisplayMemberPath="Name"
-                  Margin="5"/>
+        
         <Label Content="Выберите тип метки"
                Margin="5"/>
         <ComboBox ItemsSource="{Binding Tags}"

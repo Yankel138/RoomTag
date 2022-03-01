@@ -17,8 +17,6 @@ namespace RoomTag
     internal class MainViewViewModel
     {
         private ExternalCommandData _commandData;
-
-        //public Pipe Pipe { get; }
         public List<FamilySymbol> Tags { get; }
         public DelegateCommand SaveCommand { get; }
         public FamilySymbol SelectedTagType { get; set; }
@@ -26,7 +24,6 @@ namespace RoomTag
         public MainViewViewModel(ExternalCommandData commandData)
         {
             _commandData = commandData;
-            Pipe = SelectionUtils.GetObject<Pipe>(commandData, "Выберите трубу");
             Tags = TagsUtils.GetRoomTagTypes(commandData);
             SaveCommand = new DelegateCommand(OnSaveCommand);
 
@@ -39,13 +36,16 @@ namespace RoomTag
             Document doc = uidoc.Document;
 
             List<Room> rooms = TagsUtils.GetRooms(_commandData);
-            var pipeCurve = pipeLocCurve.Curve;
-            var pipeMidPoint = (pipeCurve.GetEndPoint(0) + pipeCurve.GetEndPoint(1)) / 2;
 
             using (var ts = new Transaction(doc, "Create tag"))
             {
                 ts.Start();
-                IndependentTag.Create(doc, SelectedTagType.Id, doc.ActiveView.Id, new Reference(Pipe), false, TagOrientation.Horizontal, pipeMidPoint);
+                foreach (Room room in rooms)
+                {
+                    XYZ roomCenter = TagsUtils.GetElementCenter(room);
+                    IndependentTag.Create(doc, SelectedTagType.Id, doc.ActiveView.Id, new Reference(SelectedTagType), false, TagOrientation.Horizontal, roomCenter);
+                }
+
                 ts.Commit();
             }
 

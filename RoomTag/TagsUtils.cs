@@ -39,5 +39,11 @@ namespace RoomTag
             return rooms;
 
         }
+
+        public static XYZ GetElementCenter(Element element)
+        {
+            BoundingBoxXYZ bounding = element.get_BoundingBox(null);
+            return (bounding.Max + bounding.Min) / 2;
+        }
     }
 }
