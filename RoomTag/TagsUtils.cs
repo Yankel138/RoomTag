@@ -11,33 +11,24 @@ namespace RoomTag
 {
     internal class TagsUtils
     {
-        public static List<FamilySymbol> GetRoomTagTypes(ExternalCommandData commandData)
+        public static List<RoomTagType> GetRoomTagTypes(Document doc)
         {
-            
-            Document doc = commandData.Application.ActiveUIDocument.Document;
-
-            var roomTagTypes = new FilteredElementCollector(doc)
-                .OfCategory(BuiltInCategory.OST_RoomTags)
-                .OfClass(typeof(FamilySymbol))
-                .Cast<FamilySymbol>()
-                .ToList();
+            FilteredElementCollector filteredElementCollector = new FilteredElementCollector(doc);
+            filteredElementCollector.OfClass(typeof(FamilySymbol));
+            filteredElementCollector.OfCategory(BuiltInCategory.OST_RoomTags);
+            var roomTagTypes = filteredElementCollector.Cast<RoomTagType>().ToList();
             return roomTagTypes;
-
         }
 
 
-        public static List<Room> GetRooms(ExternalCommandData commandData)
+        public static List<Room> GetRooms(Document doc)
         {
-
-            Document doc = commandData.Application.ActiveUIDocument.Document;
-
-            var rooms = new FilteredElementCollector(doc)
-                .OfClass(typeof(Room))
+            List<Room> rooms = new FilteredElementCollector(doc)
+                .OfClass(typeof(SpatialElement))
                 .OfType<Room>()
-                
+                .Where(x => x.Area>0)
                 .ToList();
             return rooms;
-
         }
 
         public static XYZ GetElementCenter(Element element)

@@ -17,14 +17,16 @@ namespace RoomTag
     internal class MainViewViewModel
     {
         private ExternalCommandData _commandData;
-        public List<FamilySymbol> Tags { get; }
+        private Document _doc;
+        public List<RoomTagType> Tags { get; }
         public DelegateCommand SaveCommand { get; }
-        public FamilySymbol SelectedTagType { get; set; }
+        public RoomTagType SelectedTagType { get; set; }
 
         public MainViewViewModel(ExternalCommandData commandData)
         {
             _commandData = commandData;
-            Tags = TagsUtils.GetRoomTagTypes(commandData);
+            _doc = commandData.Application.ActiveUIDocument.Document;
+            Tags = TagsUtils.GetRoomTagTypes(_doc);
             SaveCommand = new DelegateCommand(OnSaveCommand);
 
         }
@@ -35,20 +37,21 @@ namespace RoomTag
             UIDocument uidoc = uiapp.ActiveUIDocument;
             Document doc = uidoc.Document;
 
-            List<Room> rooms = TagsUtils.GetRooms(_commandData);
+            List<Room> rooms = TagsUtils.GetRooms(_doc);
+            View view = _doc.ActiveView;
 
-            using (var ts = new Transaction(doc, "Create tag"))
-            {
-                ts.Start();
-                foreach (Room room in rooms)
+                using (var ts = new Transaction(doc, "Create tag"))
                 {
-                    XYZ roomCenter = TagsUtils.GetElementCenter(room);
-                    IndependentTag.Create(doc, SelectedTagType.Id, doc.ActiveView.Id, new Reference(SelectedTagType), false, TagOrientation.Horizontal, roomCenter);
+                    ts.Start();
+                    foreach (var room in rooms)
+                    {
+                        XYZ roomCenter = TagsUtils.GetElementCenter(room);
+                        UV point = new UV(roomCenter.X, roomCenter.Y);
+                        Autodesk.Revit.DB.Architecture.RoomTag newTag = doc.Create.NewRoomTag(new LinkElementId(room.Id), point, null);
+                        newTag.RoomTagType = SelectedTagType;
+                    }
+                    ts.Commit();
                 }
-
-                ts.Commit();
-            }
-
             RaiseCloseRequest();
         }
 

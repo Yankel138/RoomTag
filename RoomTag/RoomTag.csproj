@@ -44,9 +44,11 @@
     </Reference>
     <Reference Include="RevitAPI">
       <HintPath>F:\Revit\Revit\Revit 2022\RevitAPI.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="RevitAPIUI">
       <HintPath>F:\Revit\Revit\Revit 2022\RevitAPIUI.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="RevitTask, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\RevitTask.3.0.0\lib\net47\RevitTask.dll</HintPath>
@@ -82,9 +84,12 @@
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="RoomTag.addin" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
+    <PostBuildEvent>xcopy "$(TargetDir)*.*" "C:\Program Files\RevitAPI\" /y /i
+xcopy "$(ProjectDir)$(ProjectName).addin" "%25AppData%25\Autodesk\Revit\Addins\2022\" /y /i</PostBuildEvent>
   </PropertyGroup>
 </Project>
